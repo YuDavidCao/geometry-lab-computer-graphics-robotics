@@ -1,0 +1,208 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{amsmath,amsthm,amssymb, amsfonts}
+\usepackage{relsize}
+\usepackage{graphicx}
+\graphicspath{ {./} }
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+%description -> general document format:
+\newcommand{\boldtext}[1]{\textbf{#1}}
+
+\newcommand{\image}[2]{\includegraphics[scale=#1]{#2}}
+
+\newcommand{\mysection}[1]{
+    \section*{#1}
+    \hrule
+    \vspace*{0.5cm}
+}
+
+\newcommand{\mysubsection}[1]{
+    \subsection*{· #1}
+}
+
+%description -> general math format:
+\newcommand{\myunderscore}[2]{
+    \underbrace{#1}_\text{#2}
+}
+
+\newcommand{\twolinesplit}[3]{
+    \begin{equation*}
+        #1
+        \begin{cases}
+             & #2   \\
+             & #3
+        \end{cases}
+    \end{equation*}
+}
+
+\newcommand{\threelinesplit}[4]{
+    \begin{equation*}
+        #1
+        \begin{cases}
+             & #2   \\
+             & #3   \\
+             & #4
+        \end{cases}
+    \end{equation*}
+}
+
+%description -> discrete mathematics:
+\newcommand{\R}{\mathbb{R}} % Real numbers
+\newcommand{\N}{\mathbb{N}} % Natural numbers
+\newcommand{\Z}{\mathbb{Z}} % Integers
+\newcommand{\Q}{\mathbb{Q}} % Rational numbers
+\newcommand{\set}[1]{\{#1\}} % items wrapped in a set
+\newcommand{\powerset}[1]{\mathcal{P}(#1)} % items wrapped in a powerset
+\newcommand{\floor}[1]{\lfloor #1 \rfloor} % floor notation
+\newcommand{\floorfrac}[2]{\lfloor \cfrac{#1}{#2} \rfloor} % floor notation but with a fraction inside
+\newcommand{\ceil}[1]{\lceil #1 \rceil} % ceiling notation
+\newcommand{\ceilfrac}[2]{\lceil \cfrac{#1}{#2} \rceil} % ceiling notation but with a fraction inside
+\newcommand{\Lsum}[2]{\mathlarger{\sum}_{#1}^{#2}} % a larger sigma notation
+\newcommand{\hfrac}[2]{\left(\cfrac{#1}{#2}\right)} % a "high" fraction where parathasis's height is adjusted to fit the fraction
+\newcommand{\RR}[1]{\mathcal{R}_#1} % testing -> Relational (temporal)
+\renewcommand{\R}{\mathcal{R}} % testing -> Relational (temporal)
+
+%description -> linear algebra:
+
+\renewcommand{\det}[1]{
+    $\begin{vmatrix*}[r] #1 \end{vmatrix*}$
+}
+
+\newcommand{\mateq}{$\backsim$}
+\newcommand{\mat}[1]{
+    $\begin{bmatrix*}[r]
+        #1
+    \end{bmatrix*}$
+} % general matrix
+
+\newcommand{\tomat}[2]{
+    $\begin{bmatrix*}[r]
+        #1 \\
+        #2
+    \end{bmatrix*}$
+} % two-one matrix
+
+\newcommand{\ttmat}[4]{
+    $\begin{bmatrix*}[r]
+        #1 & #2 \\
+        #3 & #4
+    \end{bmatrix*}$
+} % two-two matrix
+
+\newcommand{\thmat}[3]{
+    $\begin{bmatrix*}[r] 
+        #1 \\ 
+        #2 \\
+        #3 
+    \end{bmatrix*}$
+} % three-three matrix (line combined form) (specific element in line omitted)
+
+\newcommand{\mytable}[2]{
+    \begin{center}
+        \begin{tabular}{#1}
+            #2
+        \end{tabular}
+    \end{center}
+}
+
+\newcommand{\myalign}[1]{\begin{align*}#1\end{align*}}
+\newcommand{\gap}{\vspace*{0.5cm}}
+\newcommand{\linearsec}[1]{
+    \section*{Question #1}
+    \hrule
+    \vspace*{0.5cm}
+}
+
+\title{Geometry Lab - Computer Vision \& Robotics - Sept 13 - Blog}
+\author{David Cao}
+\date{Sept 13}
+
+\begin{document}
+
+\maketitle
+
+\section*{Forward Kinematic Problem \#1}
+
+\section{Problem statement:}
+Given a robot with a list of of segments, joints, and prismatic joint, can we give an explicit description of the areas that the robot can reach:
+\vspace{3em} \\
+\image{0.75}{img1}\\
+\begin{center}
+  Example 1
+\end{center}
+
+\section{Reading summary:}
+
+We can parametrize the circular area of reach of the ith joint to be $S^i$ or by the interval $[0, 2\pi]$ with the endpoints identified.  \\
+\\
+Similarly, we can use the $I^i$ to describe the reach of the ith prismatic joint.  \\
+\\
+With that, possible settings of the whole collection of joints in a robot with r revolute joints and p prismatic joints can be parametrized by the Cartesian product:  \\
+\\
+\myalign{
+  J = S^1 \times \cdot\cdot\cdot \times S^r \times I_1 \times \cdot\cdot\cdot \times I_p
+}
+We will call $J$ the joint space of the robot.\\
+\\
+We also represent possible positions of the “hand” by the points (a, b) of a region $U$. \\
+\\
+We can also call $C = U \times V$  the configuration space or operational space of the robot's
+hand. \\
+\section{Exercise Problem:}
+Give descriptions of the joint space $J$ and the configuration space $C$ for the planar robot picture in Example 1 in the text. For your description of $C$, determine a bounded subset of $U \in \mathbb{R}^2$ containing all possible hand positions. Hint: The description of $U$ will depend on the lengths of the segments. \\
+
+\section{Discussion and discovery:}
+
+
+
+\subsection{Describing $U$ with $S$ and $I$:}
+
+By the description of J, we can use $S$ and $I$ to describe the coordinate $(x, y)$:
+\myalign{
+  & x = S^1 + S^2 + S^3 + I_1 \\
+  & y = S^1 + S^2 + S^3 + I_1 + L\text{ (Segment 1 offset)}
+}
+\subsection{Describing $U$ with $r$ and $\theta$:}
+Let $\theta_i$ be the $i$th angle formed between joints \\
+\\
+Let $l_i$ be the length of $i$th prismatic joints \\
+\\
+Let $S_i$ be the length of the $i$th segment length \\
+\\
+In this problem we can define our set of variables $J = (\theta_1, \theta_2, \theta_3, L_1)$ where $\theta_1, \theta_2, \theta_3$ ranges are $[0, 2\pi]$, and $L_1$ has range of $[0, l_1]$ \\
+\\
+Using trigonometry, we can obtain that the difference of $(x,y)$ coordinate of the $i$th joints be $\Delta x = S_i \cos(\theta_i)$ and $\Delta y = S_i \sin(\theta_i)$ \\
+\\
+Therefore, we can represent the final position of the robot arm in the example with:
+\myalign{
+  & x = S_2\cos(\theta_1) + S_3\cos(\theta_2) + (S_4 + L_1)\cos(\theta_3) \\
+  & y = S_1 + S_2\sin(\theta_1) + S_3\sin(\theta_2) + (S_4 + L_1)\sin(\theta_3) \\
+}
+\subsection{Describing $U$ by inequalities}
+Assume that all joints are able to rotate from 0 to $2\pi$ Using inequalities, we can obtain $U$ as:
+\myalign{
+  U = \{(x,y) \in \mathbb{R}^2 | \text{lower bound} \leq (x-x_0)^2 + (y-y_0)^2 \leq \text{upper bound} \}
+}
+For the upper bound, we can observe that the farthest distance the robot can reach is when all of the segment of the robot points to the same direction, where their length and upper bound becomes:
+\myalign{
+  & length = \sum_{}^{i}l_i \\
+  & upper bound = (length)^2 = (\sum_{}^{i}l_i)^2
+}
+For the lower bound, we are considering the case where the due to the length of one particular segment, we are not able to reach the center space. In the picture below, segment 3 is shorter than segment 2, causing only the shaded area to be the the reachable area, leaving a small circular area unreachable in the middle: \\
+\image{0.25}{img2}
+\\
+We notice that the case of unreachable area only appears when the sum of all smaller segments are less than the longest segments. Because if the largest side is smaller than the sum of the other sides then we can construct a polygon or a crossed polygon to reach back to the origin: \\
+\image{0.25}{img3}
+When constructing the lower bound, we also want to consider that the lower bound cannot be negative, the least it can be is 0, or no lower bound. Therefore, we can define our lower bound to be:
+\myalign{
+    lowerbound = (max(2\cdot max(l) - \sum_{}^{i}l_i), 0)^2
+}
+Then we define $U$ to be:
+\myalign{
+    U = \{(x,y) \in \mathbb{R}^2 | (max(2\cdot max(l) - \sum_{}^{i}l_i), 0)^2 \leq (x-x_0)^2 + (y-y_0)^2 \leq (\sum_{}^{i}l_i)^2 \}
+}
+
+\end{document}
