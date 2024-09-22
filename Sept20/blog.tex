@@ -196,7 +196,7 @@ Using the trigonometric addition formulas, this equation can be written as
     x_i \\
     y_1 \\
     1
-  } = 
+  } =
   \mat{
     cos(\theta_1+\theta_2+\theta_3) & -sin(\theta_1+\theta_2+\theta_3) & l_3cos(\theta_1+\theta_2) + l_2cos(\theta_1) \\
     sin(\theta_1+\theta_2+\theta_3) & cos(\theta_1+\theta_2+\theta_3) & l_3sin(\theta_1+\theta_2) + l_2sin(\theta_1) \\
@@ -234,8 +234,146 @@ Moreover, we can also use rational parametrization to represent reach:
   & x = \cfrac{1-t^2}{1+t^2} \\
   & y = \cfrac{2}{1+t^2}
 }
+\section{Exercise Problem:}
+\subsection{Problem 1 statement:}
+We claim that \\
+\begin{center}
+  \mat{
+    x_1 \\
+    y_1
+  } = \mat{
+    cos(\theta) & -sin(\theta) \\
+    sin(\theta) & cos(\theta)
+  } $\cdot$ \mat{
+    x_2 \\
+    y_2
+  }
+\end{center}
+Define:
+\begin{center}
+  $q = (x_2, y_2) = (rcos(\alpha), rsin(\alpha))$
+\end{center}
+Show that:
+\begin{center}
+  $q = (x_1, x_2) = (rcos(\alpha + \theta), rsin(\alpha + \theta))$
+\end{center}
+And prove the matrix multiplication
+\subsection*{Problem 2 statement:}
+Show that any affine transformation in the plane
+\myalign{
+  x^{'} = ax + by + e \\
+  y^{'} = cx + dy + f
+}
+can be represented in a similar way:
+\begin{center}
+  \mat{
+    x^{'} \\
+    y^{'} \\
+    1
+  } = \mat{
+    a & b & e \\
+    c & d & f \\
+    0 & 0 & 1
+  } $\cdot$ \mat{
+    x \\
+    y \\
+    1
+  }
+\end{center}
+Give a similar representation for affine transformations of $\mathbb{R}^3$ using 4 × 4 matrices.
 
 \section{Discussion and discovery:}
-
+\subsection{Problem 1:}
+Looking at the illustrative graph below, we can notice that under $(x_2, y_2)$ coordinate, we can write
+the point as:
+\begin{center}
+  $(rcos(\alpha), rsin(\alpha))$
+\end{center}
+But if we rotate the axis by an angle of $\alpha$, we would also need to add the angle $\alpha$ in the polar coordinate, resulting in $(x_1, y_1)$ to be represented as:
+\begin{center}
+  $(rcos(\theta + \alpha), rsin(\theta + \alpha))$
+\end{center}
+\image{0.22}{img3} \\
+Now to prove the rotational matrix, we can set the equation to:
+\begin{center}
+  \mat{
+    rcos(\theta + \alpha) \\
+    rsin(\theta + \alpha)
+  } = \mat{
+    x & y \\
+    z & a
+  } $\cdot$ \mat{
+    rcos(\alpha) \\
+    rsin(\alpha)
+  } \\
+  \gap
+  \mat{
+    rcos(\theta + \alpha) \\
+    rsin(\theta + \alpha)
+  } = \mat{
+    rxcos(\alpha) + rysin(\alpha) \\
+    rzcos(\alpha) + r\alpha sin(\alpha)
+  } \\
+  \gap
+  $cos(\theta + \alpha) = cos(\theta)cos(\alpha)-sin(\theta)sin(\alpha)$ \\
+  $sin(\theta + \alpha) = sin(\theta)cos(\alpha)-sin(\theta)cos(\alpha)$ \\
+  $x = cos(\theta)$ \\
+  $y = -sin(\theta)$ \\
+  $z = sin(\theta)$ \\
+  $a = cos(\theta)$ \\
+\end{center}
+\subsection{Problem 2:}
+The matrix form can be easily proved by completing the matrix multiplication, the similar representation for $\mathbb{R}^3$ can be represented as:
+\begin{center}
+  \mat{
+    x^{'} \\
+    y^{'} \\
+    z^{'} \\
+    1
+  } = \mat{
+    a & b & c & j \\
+    d & e & f & k \\
+    g & h & i & l \\
+    0 & 0 & 0 & 1
+  } $\cdot$ \mat{
+    x \\
+    y \\
+    z \\
+    1
+  }
+\end{center}
+It is also important to talk about the reason behind using 3 by 3 matrix for 2D and 4 by 4 matrix for 3D. The reason is that the 3 by 3 matrix is used to represent the rotation and translation in 2D, while the 4 by 4 matrix is used to represent the rotation, translation, and scaling in 3D. \\
+For example, if we want to represent both transformation and rotation in 2D, we will need this equation:
+\begin{center}
+  \mat{
+    x_i \\
+    b_i
+  } = \mat{
+    cos(\theta_i) & -sin(\theta_i)  \\
+    sin(\theta_i) & cos(\theta_i) \\
+  } $\cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1} \\
+  } + \mat{
+    l_i \\
+    0
+  }
+\end{center}
+We notice that the vector addition for translation at the end could be hard to calculate when there are multiple transformations, however, this translation can be easily represented in the 3 by 3 matrix form:
+\begin{center}
+  \mat{
+    x_i \\
+    b_i \\
+    1
+  } = \mat{
+    cos(\theta_i) & -sin(\theta_i) & l_i \\
+    sin(\theta_i) & cos(\theta_i) & 0 \\
+    0 & 0 & 1
+  } $\cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1} \\
+    1
+  }
+\end{center}
 
 \end{document}
