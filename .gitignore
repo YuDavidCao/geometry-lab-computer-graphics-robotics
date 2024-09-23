@@ -5,3 +5,4 @@
 *.synctex.gz
 template.pdf
 template.tex
+__pycache__/
