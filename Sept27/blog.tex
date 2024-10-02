@@ -1,0 +1,186 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{amsmath,amsthm,amssymb, amsfonts}
+\usepackage{relsize}
+\usepackage{graphicx}
+\graphicspath{ {./} }
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+%description -> general document format:
+\newcommand{\boldtext}[1]{\textbf{#1}}
+
+\newcommand{\image}[2]{\includegraphics[scale=#1]{#2}}
+
+\newcommand{\mysection}[1]{
+    \section*{#1}
+    \hrule
+    \vspace*{0.5cm}
+}
+
+\newcommand{\mysubsection}[1]{
+    \subsection*{· #1}
+}
+
+%description -> general math format:
+\newcommand{\myunderscore}[2]{
+    \underbrace{#1}_\text{#2}
+}
+
+\newcommand{\twolinesplit}[3]{
+    \begin{equation*}
+        #1
+        \begin{cases}
+             & #2   \\
+             & #3
+        \end{cases}
+    \end{equation*}
+}
+
+\newcommand{\threelinesplit}[4]{
+    \begin{equation*}
+        #1
+        \begin{cases}
+             & #2   \\
+             & #3   \\
+             & #4
+        \end{cases}
+    \end{equation*}
+}
+
+%description -> discrete mathematics:
+\newcommand{\R}{\mathbb{R}} % Real numbers
+\newcommand{\N}{\mathbb{N}} % Natural numbers
+\newcommand{\Z}{\mathbb{Z}} % Integers
+\newcommand{\Q}{\mathbb{Q}} % Rational numbers
+\newcommand{\set}[1]{\{#1\}} % items wrapped in a set
+\newcommand{\powerset}[1]{\mathcal{P}(#1)} % items wrapped in a powerset
+\newcommand{\floor}[1]{\lfloor #1 \rfloor} % floor notation
+\newcommand{\floorfrac}[2]{\lfloor \cfrac{#1}{#2} \rfloor} % floor notation but with a fraction inside
+\newcommand{\ceil}[1]{\lceil #1 \rceil} % ceiling notation
+\newcommand{\ceilfrac}[2]{\lceil \cfrac{#1}{#2} \rceil} % ceiling notation but with a fraction inside
+\newcommand{\Lsum}[2]{\mathlarger{\sum}_{#1}^{#2}} % a larger sigma notation
+\newcommand{\hfrac}[2]{\left(\cfrac{#1}{#2}\right)} % a "high" fraction where parathasis's height is adjusted to fit the fraction
+\newcommand{\RR}[1]{\mathcal{R}_#1} % testing -> Relational (temporal)
+\renewcommand{\R}{\mathcal{R}} % testing -> Relational (temporal)
+
+%description -> linear algebra:
+
+\renewcommand{\det}[1]{
+    $\begin{vmatrix*}[r] #1 \end{vmatrix*}$
+}
+
+\newcommand{\mateq}{$\backsim$}
+\newcommand{\mat}[1]{
+    $\begin{bmatrix*}[r]
+        #1
+    \end{bmatrix*}$
+} % general matrix
+
+\newcommand{\tomat}[2]{
+    $\begin{bmatrix*}[r]
+        #1 \\
+        #2
+    \end{bmatrix*}$
+} % two-one matrix
+
+\newcommand{\ttmat}[4]{
+    $\begin{bmatrix*}[r]
+        #1 & #2 \\
+        #3 & #4
+    \end{bmatrix*}$
+} % two-two matrix
+
+\newcommand{\thmat}[3]{
+    $\begin{bmatrix*}[r] 
+        #1 \\ 
+        #2 \\
+        #3 
+    \end{bmatrix*}$
+} % three-three matrix (line combined form) (specific element in line omitted)
+
+\newcommand{\mytable}[2]{
+    \begin{center}
+        \begin{tabular}{#1}
+            #2
+        \end{tabular}
+    \end{center}
+}
+
+\newcommand{\myalign}[1]{\begin{align*}#1\end{align*}}
+\newcommand{\gap}{\vspace*{0.5cm}}
+\newcommand{\linearsec}[1]{
+    \section*{Question #1}
+    \hrule
+    \vspace*{0.5cm}
+}
+
+\title{Geometry Lab - Computer Graphics \& Robotics - Sept 20 - Blog}
+\author{David Cao}
+\date{Sept 20}
+
+\begin{document}
+
+\maketitle
+
+\section*{Forward Kinematic Problem \#1}
+\section{Problem statement:}
+Given a robot with a list of of segments, joints, and prismatic joint, can we give an explicit description of the areas that the robot can reach:
+\vspace{3em} \\
+\image{0.75}{img1}\\
+\begin{center}
+  Example 1
+\end{center}
+
+\section{Reading summary:}
+This week's reading is the same as last week's
+\section{Exercise Problem:}
+\subsection{Problem 1 statement:}
+\image{0.5}{img2}
+\subsection{Problem 2 statement:}
+\image{0.5}{img3}
+\subsection*{Problem 2 statement:}
+\section{Discussion and discovery:}
+\subsection{Problem 1:}
+To represent $cos(\alpha)$ using  polynomials, we can use trigonometric identities:
+\myalign{
+    & c = cos(\alpha) = cos(\theta_1 +\theta_2 + \theta_3) \\
+    & c = cos(\theta_1)cos(\theta_2+\theta_3)-sin(\theta_1)sin(\theta_2+\theta_3) \\
+    & c = cos(\theta_1)(cos(\theta_2)cos(\theta_3)-sin(\theta_2)sin(\theta_3))-sin(\theta_1)(sin(\theta_2)cos(\theta_3)+cos(\theta_2)sin(\theta_3)) \\
+    & s = sin(\alpha) = sin(\theta_1 + \theta_2 + \theta_3) \\
+    & s = sin(\theta_1)cos(\theta_2+\theta_3)+cos(\theta_1)sin(\theta_2+\theta_3) \\
+    & s = sin(\theta_1)(cos(\theta_2)cos(\theta_3)-sin(\theta_2)sin(\theta_3))+cos(\theta_1)(sin(\theta_2)cos(\theta_3)+cos(\theta_2)sin(\theta_3)) \\
+}
+using polynomial:
+\myalign{
+    c_i = cos(\theta_i) \\
+    s_i = sin(\theta_i) \\
+    c_i^2 + s_i^2 = 1 \\
+}
+we can represent $cos(\alpha)$ as:
+\myalign{
+    c = c_1(c_2c_3-s_2s_3)-s_1(s_2c_3+c_2s_3) \\
+    s = s_1(c_2c_3-s_2s_3)+c_1(s_2c_3+c_2s_3) \\
+}
+\subsection{Problem 2:}
+Here's a illustrative graph of problem 2's robot: \\
+\begin{center}
+    \image{0.15}{img4}
+\end{center}
+$A_1$ = \mat{
+    cos(\theta_1) & -sin(\theta_1) & 0 \\
+    sin(\theta_1) & cos(\theta_1) & 0 \\
+    0 & 0 & 1
+} 
+$A_2$ = \mat{
+    cos(0) & -sin(0) & l_2 \\
+    sin(0) & cos(0) & 0 \\
+    0 & 0 & 1
+} 
+$A_3$ = \mat{
+    cos(\theta_2) & -sin(\theta_2) & l_3 \\
+    sin(\theta_2) & cos(\theta_2) & 0 \\
+    0 & 0 & 1
+} \\
+\end{document}

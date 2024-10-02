@@ -1,0 +1,379 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{amsmath,amsthm,amssymb, amsfonts}
+\usepackage{relsize}
+\usepackage{graphicx}
+\graphicspath{ {./} }
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+%description -> general document format:
+\newcommand{\boldtext}[1]{\textbf{#1}}
+
+\newcommand{\image}[2]{\includegraphics[scale=#1]{#2}}
+
+\newcommand{\mysection}[1]{
+    \section*{#1}
+    \hrule
+    \vspace*{0.5cm}
+}
+
+\newcommand{\mysubsection}[1]{
+    \subsection*{· #1}
+}
+
+%description -> general math format:
+\newcommand{\myunderscore}[2]{
+    \underbrace{#1}_\text{#2}
+}
+
+\newcommand{\twolinesplit}[3]{
+    \begin{equation*}
+        #1
+        \begin{cases}
+             & #2   \\
+             & #3
+        \end{cases}
+    \end{equation*}
+}
+
+\newcommand{\threelinesplit}[4]{
+    \begin{equation*}
+        #1
+        \begin{cases}
+             & #2   \\
+             & #3   \\
+             & #4
+        \end{cases}
+    \end{equation*}
+}
+
+%description -> discrete mathematics:
+\newcommand{\R}{\mathbb{R}} % Real numbers
+\newcommand{\N}{\mathbb{N}} % Natural numbers
+\newcommand{\Z}{\mathbb{Z}} % Integers
+\newcommand{\Q}{\mathbb{Q}} % Rational numbers
+\newcommand{\set}[1]{\{#1\}} % items wrapped in a set
+\newcommand{\powerset}[1]{\mathcal{P}(#1)} % items wrapped in a powerset
+\newcommand{\floor}[1]{\lfloor #1 \rfloor} % floor notation
+\newcommand{\floorfrac}[2]{\lfloor \cfrac{#1}{#2} \rfloor} % floor notation but with a fraction inside
+\newcommand{\ceil}[1]{\lceil #1 \rceil} % ceiling notation
+\newcommand{\ceilfrac}[2]{\lceil \cfrac{#1}{#2} \rceil} % ceiling notation but with a fraction inside
+\newcommand{\Lsum}[2]{\mathlarger{\sum}_{#1}^{#2}} % a larger sigma notation
+\newcommand{\hfrac}[2]{\left(\cfrac{#1}{#2}\right)} % a "high" fraction where parathasis's height is adjusted to fit the fraction
+\newcommand{\RR}[1]{\mathcal{R}_#1} % testing -> Relational (temporal)
+\renewcommand{\R}{\mathcal{R}} % testing -> Relational (temporal)
+
+%description -> linear algebra:
+
+\renewcommand{\det}[1]{
+    $\begin{vmatrix*}[r] #1 \end{vmatrix*}$
+}
+
+\newcommand{\mateq}{$\backsim$}
+\newcommand{\mat}[1]{
+    $\begin{bmatrix*}[r]
+        #1
+    \end{bmatrix*}$
+} % general matrix
+
+\newcommand{\tomat}[2]{
+    $\begin{bmatrix*}[r]
+        #1 \\
+        #2
+    \end{bmatrix*}$
+} % two-one matrix
+
+\newcommand{\ttmat}[4]{
+    $\begin{bmatrix*}[r]
+        #1 & #2 \\
+        #3 & #4
+    \end{bmatrix*}$
+} % two-two matrix
+
+\newcommand{\thmat}[3]{
+    $\begin{bmatrix*}[r] 
+        #1 \\ 
+        #2 \\
+        #3 
+    \end{bmatrix*}$
+} % three-three matrix (line combined form) (specific element in line omitted)
+
+\newcommand{\mytable}[2]{
+    \begin{center}
+        \begin{tabular}{#1}
+            #2
+        \end{tabular}
+    \end{center}
+}
+
+\newcommand{\myalign}[1]{\begin{align*}#1\end{align*}}
+\newcommand{\gap}{\vspace*{0.5cm}}
+\newcommand{\linearsec}[1]{
+    \section*{Question #1}
+    \hrule
+    \vspace*{0.5cm}
+}
+
+\title{Geometry Lab - Computer Graphics \& Robotics - Sept 20 - Blog}
+\author{David Cao}
+\date{Sept 20}
+
+\begin{document}
+
+\maketitle
+
+\section*{Forward Kinematic Problem \#1}
+\section{Problem statement:}
+Given a robot with a list of of segments, joints, and prismatic joint, can we give an explicit description of the areas that the robot can reach:
+\vspace{3em} \\
+\image{0.75}{img1}\\
+\begin{center}
+  Example 1
+\end{center}
+
+\section{Reading summary:}
+§2 of the reading introduces a new representation of the reachable position using linear algebra. \\
+\\
+First, at At a revolute joint $i$, we introduce an $(x_{i+1}, y_{i+1})$ coordinate system in the following way:
+We take the positive xi+1-axis to lie along
+the direction of segment i + 1 (in the robot's current position). Then the positive
+$y_{i+1}$-axis is determined to form a normal right-handed rectangular coordinate system. A illustration of this local coordinate system is shown below:
+\image{0.6}{img2} \\
+Giving the angle between them $\theta_i$ and length of the segment $l_i$,
+such representation allows us to relate coordinate $(x_{i+1}, y_{i+1})$ with $(x_i, y_i)$ using linear algebra:
+\begin{center}
+  \mat{
+    x_i \\
+    y_1
+  } = \mat{
+    cos(\theta_i) & -sin(\theta_i) \\
+    sin(\theta_i) & cos(\theta_i) \\
+  } $\cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1}
+  } + \mat{
+    l_i \\
+    0
+  }
+\end{center}
+Or better using 3 by 3 matrix:
+\begin{center}
+  \mat{
+    x_i \\
+    y_1 \\
+    1
+  } = \mat{
+    cos(\theta_i) & -sin(\theta_i) & l_i \\
+    sin(\theta_i) & cos(\theta_i) & 0 \\
+    0 & 0 & 1
+  } $\cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1} \\
+    1
+  } = $A_i \cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1} \\
+    1
+  }
+\end{center}
+Matrix notation allows us to express the final coordinate in a more concise way:
+\begin{center}
+  \mat{
+    x_i \\
+    y_1 \\
+    1
+  } = $A_1A_2A_3 \cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1} \\
+    1
+  } \\
+\end{center}
+Using the trigonometric addition formulas, this equation can be written as
+\begin{center}
+  \mat{
+    x_i \\
+    y_1 \\
+    1
+  } =
+  \mat{
+    cos(\theta_1+\theta_2+\theta_3) & -sin(\theta_1+\theta_2+\theta_3) & l_3cos(\theta_1+\theta_2) + l_2cos(\theta_1) \\
+    sin(\theta_1+\theta_2+\theta_3) & cos(\theta_1+\theta_2+\theta_3) & l_3sin(\theta_1+\theta_2) + l_2sin(\theta_1) \\
+    0 & 0 & 1
+  }
+  $\cdot$ \mat{
+    x_{4} \\
+    y_{4} \\
+    1
+  }
+\end{center}
+When calculating the matrix product, we can assume that the end point of the robot $(x_4, y_4)$ is the origin,
+and through matrix multiplication get the relative coordinate of the point $(x_4, y_4)$ with respect to $(x_0, y_0)$.
+Since we can assume that $x_0 = y_0 = 0$, the result of the matrix multiplication is:
+\begin{center}
+  \mat{
+    x_1 \\
+    y_1 \\
+    1
+  } = \mat{
+    & l_3cos(\theta_1 + \theta_2) + l_2cos(\theta_1) \\
+    & l_3sin(\theta_1 + \theta_2) + l_2sin(\theta_1) \\
+    & 1
+  } \\
+\end{center}
+Besides using $\theta$ and $l$, using parametrization $x = cos(\theta)$ and $y = sin(\theta)$, we can represent the result in a polynomial form:
+\begin{center}
+  \mat{
+    l_3(c_1c_2-s_1s_2) + l_2c_1\\
+    l_3(s_1c_2+s_2c_1) + l_2s_1
+  }
+\end{center}
+Moreover, we can also use rational parametrization to represent reach:
+\myalign{
+  & x = \cfrac{1-t^2}{1+t^2} \\
+  & y = \cfrac{2}{1+t^2}
+}
+\section{Exercise Problem:}
+\subsection{Problem 1 statement:}
+We claim that \\
+\begin{center}
+  \mat{
+    x_1 \\
+    y_1
+  } = \mat{
+    cos(\theta) & -sin(\theta) \\
+    sin(\theta) & cos(\theta)
+  } $\cdot$ \mat{
+    x_2 \\
+    y_2
+  }
+\end{center}
+Define:
+\begin{center}
+  $q = (x_2, y_2) = (rcos(\alpha), rsin(\alpha))$
+\end{center}
+Show that:
+\begin{center}
+  $q = (x_1, x_2) = (rcos(\alpha + \theta), rsin(\alpha + \theta))$
+\end{center}
+And prove the matrix multiplication
+\subsection*{Problem 2 statement:}
+Show that any affine transformation in the plane
+\myalign{
+  x^{'} = ax + by + e \\
+  y^{'} = cx + dy + f
+}
+can be represented in a similar way:
+\begin{center}
+  \mat{
+    x^{'} \\
+    y^{'} \\
+    1
+  } = \mat{
+    a & b & e \\
+    c & d & f \\
+    0 & 0 & 1
+  } $\cdot$ \mat{
+    x \\
+    y \\
+    1
+  }
+\end{center}
+Give a similar representation for affine transformations of $\mathbb{R}^3$ using 4 × 4 matrices.
+
+\section{Discussion and discovery:}
+\subsection{Problem 1:}
+Looking at the illustrative graph below, we can notice that under $(x_2, y_2)$ coordinate, we can write
+the point as:
+\begin{center}
+  $(rcos(\alpha), rsin(\alpha))$
+\end{center}
+But if we rotate the axis by an angle of $\alpha$, we would also need to add the angle $\alpha$ in the polar coordinate, resulting in $(x_1, y_1)$ to be represented as:
+\begin{center}
+  $(rcos(\theta + \alpha), rsin(\theta + \alpha))$
+\end{center}
+\image{0.22}{img4} \\
+Now to prove the rotational matrix, we can set the equation to:
+\begin{center}
+  \mat{
+    rcos(\theta + \alpha) \\
+    rsin(\theta + \alpha)
+  } = \mat{
+    x & y \\
+    z & a
+  } $\cdot$ \mat{
+    rcos(\alpha) \\
+    rsin(\alpha)
+  } \\
+  \gap
+  \mat{
+    rcos(\theta + \alpha) \\
+    rsin(\theta + \alpha)
+  } = \mat{
+    rxcos(\alpha) + rysin(\alpha) \\
+    rzcos(\alpha) + r\alpha sin(\alpha)
+  } \\
+  \gap
+  $cos(\theta + \alpha) = cos(\theta)cos(\alpha)-sin(\theta)sin(\alpha)$ \\
+  $sin(\theta + \alpha) = sin(\theta)cos(\alpha)-sin(\theta)cos(\alpha)$ \\
+  $x = cos(\theta)$ \\
+  $y = -sin(\theta)$ \\
+  $z = sin(\theta)$ \\
+  $a = cos(\theta)$ \\
+\end{center}
+\subsection{Problem 2:}
+The matrix form can be easily proved by completing the matrix multiplication, the similar representation for $\mathbb{R}^3$ can be represented as:
+\begin{center}
+  \mat{
+    x^{'} \\
+    y^{'} \\
+    z^{'} \\
+    1
+  } = \mat{
+    a & b & c & j \\
+    d & e & f & k \\
+    g & h & i & l \\
+    0 & 0 & 0 & 1
+  } $\cdot$ \mat{
+    x \\
+    y \\
+    z \\
+    1
+  }
+\end{center}
+It is also important to talk about the reason behind using 3 by 3 matrix for 2D and 4 by 4 matrix for 3D. The reason is that the 3 by 3 matrix is used to represent the rotation and translation in 2D, while the 4 by 4 matrix is used to represent the rotation, translation, and scaling in 3D. \\
+For example, if we want to represent both transformation and rotation in 2D, we will need this equation:
+\begin{center}
+  \mat{
+    x_i \\
+    b_i
+  } = \mat{
+    cos(\theta_i) & -sin(\theta_i)  \\
+    sin(\theta_i) & cos(\theta_i) \\
+  } $\cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1} \\
+  } + \mat{
+    l_i \\
+    0
+  }
+\end{center}
+We notice that the vector addition for translation at the end could be hard to calculate when there are multiple transformations, however, this translation can be easily represented in the 3 by 3 matrix form:
+\begin{center}
+  \mat{
+    x_i \\
+    b_i \\
+    1
+  } = \mat{
+    cos(\theta_i) & -sin(\theta_i) & l_i \\
+    sin(\theta_i) & cos(\theta_i) & 0 \\
+    0 & 0 & 1
+  } $\cdot$ \mat{
+    x_{i+1} \\
+    y_{i+1} \\
+    1
+  }
+\end{center}
+
+\end{document}
