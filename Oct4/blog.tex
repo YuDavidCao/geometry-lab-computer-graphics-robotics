@@ -191,9 +191,30 @@ We can also obtain that:
     \item no possible settings of joint 1 when $a_2 + b_2 > 4$
 \end{itemize}
 
-\section{Exercise Problem:}
-\image{0.44}{img6}
+\subsection{What is an ideal:}
+\myalign{
+    & K[x] = set-of-polynomials \\
+    & I \subset K[x]: f, g \in I \\
+    & f + g \in I \\
+    & r \in K[x] \\®
+    & r \cdot f \in I \\
+}
+\subsection{Grobner basis example:}
+\myalign{
+    & I = <y-x^2,z-x^3> \text{Ideal}\\
+    & \text{claim: }g = \{y-x^2,z-x^3\} \text{is a grobner basis of I} \\
+    & f = y-x^2 \\
+    & g = z-x^3 \\
+    & S(f,g) = \cfrac{lcm(LT(f),LT(g))}{LT(f)}f - \cfrac{lcm(LT(f),LT(g))}{LT(g)}g \\
+    & S(f,g) = yx^3-zx^3
+}
+\begin{center}
+    \image{0.25}{img7}
+\end{center}
+Since the remainder is 0, we can conclude that $g$ is a Gröbner basis of $I$ under lex order $y > z > x$\\
+% \section{Exercise Problem:}
+% \image{0.44}{img6}
 
-\section{Discussion and discovery:}
+% \section{Discussion and discovery:}
 
 \end{document}
