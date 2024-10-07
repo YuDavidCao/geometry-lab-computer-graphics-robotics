@@ -21,7 +21,7 @@ class Animator:
             {
                 "segment":[
                     segment.Segment(200, math.pi*3/2, 0),
-                    segment.Segment(100, 0, 1, True, inner_radius=50, outer_radius=150),
+                    segment.Segment(100, 0, 1, True),
                     segment.Segment(50, math.pi/4, 2, True, inner_radius=0, outer_radius=50),
                 ],
                 "rotation_speed":[
@@ -33,7 +33,7 @@ class Animator:
             {
                 "segment":[
                     segment.Segment(200, math.pi*3/2, 0),
-                    segment.Segment(100, 0, 1, True, inner_radius=0, outer_radius=210),
+                    segment.Segment(100, 0, 1, True),
                     segment.Segment(60, 0, 2, True, inner_radius=0, outer_radius=60),
                     segment.Segment(50, math.pi/4, 3, True, inner_radius=0, outer_radius=50),
                 ],
@@ -47,7 +47,7 @@ class Animator:
             {
                 "segment":[
                     segment.Segment(200, math.pi*3/2, 0),
-                    segment.Segment(30, 0, 1, True, inner_radius=80, outer_radius=240),
+                    segment.Segment(30, 0, 1, True),
                     segment.Segment(160, 0, 2, True, inner_radius=110, outer_radius=210),
                     segment.Segment(50, math.pi/4, 3, True, inner_radius=0, outer_radius=50),
                 ],
@@ -64,7 +64,18 @@ class Animator:
     def render(self):
         startX = self.starting_point[0]
         startY = self.starting_point[1]
-        for segment in self.config[self.curIndex]["segment"]:
+        max_range = 0
+        largest_segment_index = 1
+        current_segments = self.config[self.curIndex]["segment"]
+        for i in range(len(current_segments)):
+            if i == 0: continue
+            max_range += current_segments[i].l
+            if current_segments[i].l > current_segments[largest_segment_index].l:
+                largest_segment_index = i
+        min_range = current_segments[largest_segment_index].l * 2 - max_range
+        current_segments[1].inner_radius = max(0, min_range) # min range is the difference between the largest segment and the sum of all the other segments
+        current_segments[1].outer_radius = max_range # max range is just the sum of all the lengths of the segments
+        for segment in current_segments:
             newCoord = segment.draw(startX, startY, self.screen, self.font)
             startX = newCoord[0]
             startY = newCoord[1]
