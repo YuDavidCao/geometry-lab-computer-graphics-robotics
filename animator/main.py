@@ -8,7 +8,7 @@ button_hover_color = (0, 100, 200)  # Darker blue for hover effect
 
 class Animator:
     
-    def __init__(self):
+    def __init__(self) -> None:
         self.screen = pg.display.set_mode((800, 600))
         self.clock = pg.time.Clock()
         self.done = False
@@ -18,63 +18,40 @@ class Animator:
         self.prev_right_clicked = time.time()
         self.curIndex = 2
         self.config = [
-            {
-                "segment":[
-                    segment.Segment(200, math.pi*3/2, 0),
-                    segment.Segment(100, 0, 1, True),
-                    segment.Segment(50, math.pi/4, 2, True, inner_radius=0, outer_radius=50),
-                ],
-                "rotation_speed":[
-                    0,
-                    0.01,
-                    0.05,
-                ]
-            },
-            {
-                "segment":[
-                    segment.Segment(200, math.pi*3/2, 0),
-                    segment.Segment(100, 0, 1, True),
-                    segment.Segment(60, 0, 2, True, inner_radius=0, outer_radius=60),
-                    segment.Segment(50, math.pi/4, 3, True, inner_radius=0, outer_radius=50),
-                ],
-                "rotation_speed":[
-                    0,
-                    0.03,
-                    0.07,
-                    0.15,
-                ]
-            },
-            {
-                "segment":[
-                    segment.Segment(200, math.pi*3/2, 0),
-                    segment.Segment(30, 0, 1, True),
-                    segment.Segment(160, 0, 2, True, inner_radius=110, outer_radius=210),
-                    segment.Segment(50, math.pi/4, 3, True, inner_radius=0, outer_radius=50),
-                ],
-                "rotation_speed":[
-                    0,
-                    0.03,
-                    0.05,
-                    0.15,
-                ]
-            }
+            self.process_input([100, 50]),
+            self.process_input([100, 60, 50]),
+            self.process_input([30, 160, 50]),
+            self.process_input([30, 70, 10, 210, 50])
         ]
         self.run()
 
-    def render(self):
+    def process_input(self, lst: list[int]) -> dict:
+        return {
+            "segment":[segment.Segment(200, math.pi*3/2, 0)] + [
+                segment.Segment(lst[i], 0, i + 1, True) for i in range(len(lst))
+            ],
+            "rotation_speed":[0] + [0.015 * (i + 1) for i in range(len(lst))]
+        }
+    
+    def render(self) -> None:
         startX = self.starting_point[0]
         startY = self.starting_point[1]
-        max_range = 0
-        largest_segment_index = 1
         current_segments = self.config[self.curIndex]["segment"]
-        for i in range(len(current_segments)):
-            if i == 0: continue
-            max_range += current_segments[i].l
-            if current_segments[i].l > current_segments[largest_segment_index].l:
-                largest_segment_index = i
-        min_range = current_segments[largest_segment_index].l * 2 - max_range
-        current_segments[1].inner_radius = max(0, min_range) # min range is the difference between the largest segment and the sum of all the other segments
-        current_segments[1].outer_radius = max_range # max range is just the sum of all the lengths of the segments
+        
+        largest_segment_index = -1
+        max_range_list = [0 for i in range(len(current_segments) - 1)]
+        min_range_list = [0 for i in range(len(current_segments) - 1)]
+        prev = 0
+        for i in range(1, len(current_segments)):
+            max_range_list[-i] = prev + current_segments[-i].l
+            prev = max_range_list[-i]
+            if current_segments[-i].l > current_segments[largest_segment_index].l:
+                largest_segment_index = -i
+            min_range_list[-i] = current_segments[largest_segment_index].l * 2 - max_range_list[-i]
+        min_range_list[-1] = 0
+        for i in range(1, len(current_segments)):
+            current_segments[-i].inner_radius = max(0, min_range_list[-i])
+            current_segments[-i].outer_radius = max_range_list[-i]
         for segment in current_segments:
             newCoord = segment.draw(startX, startY, self.screen, self.font)
             startX = newCoord[0]
