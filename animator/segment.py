@@ -3,17 +3,20 @@ import math
 
 class Segment:
     
-    def __init__(self, l, theta, i, draw_circle=False, inner_radius=0, outer_radius=0):
+    def __init__(self, l, theta, i, draw_circle=False, inner_radius=0, outer_radius=0, joint_type="revolute"):
         self.l = l
+        self.stretch_flag = -1
+        self.length_holder = l
         self.theta = theta
         self.i = i
         self.draw_circle = draw_circle
         self.inner_radius = inner_radius
         self.outer_radius = outer_radius
+        self.joint_type = joint_type
         
     def draw(self, x1, y1, screen, font):
-        x2 = x1 + self.l * math.cos(self.theta)
-        y2 = y1 + self.l * math.sin(self.theta)
+        x2 = x1 + self.length_holder * math.cos(self.theta)
+        y2 = y1 + self.length_holder * math.sin(self.theta)
         pg.draw.line(screen, (255, 255, 255), (x1, y1), (x2, y2))    
         if(self.draw_circle):
             circle_surface = pg.Surface((self.outer_radius*2, self.outer_radius*2), pg.SRCALPHA)

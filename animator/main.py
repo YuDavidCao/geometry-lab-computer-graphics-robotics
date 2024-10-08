@@ -2,13 +2,21 @@ import pygame as pg
 import math
 import segment
 import time
+from concurrent import futures
+from control import Control
 
 text_color = (255, 255, 255)  # White text
 button_hover_color = (0, 100, 200)  # Darker blue for hover effect
 
 class Animator:
     
-    def __init__(self) -> None:
+    def __init__(self, pool) -> None:
+        self.pool = pool
+        # self.pool.submit(self.tkInit)
+        self.pgInit()
+
+    def pgInit(self):
+        pg.init()
         self.screen = pg.display.set_mode((800, 600))
         self.clock = pg.time.Clock()
         self.done = False
@@ -17,13 +25,22 @@ class Animator:
         self.prev_left_clicked = time.time()
         self.prev_right_clicked = time.time()
         self.curIndex = 2
+        self.segments = [
+            [100, 50],
+            [100, 60, 50],
+            [30, 160, 50],
+            [30, 70, 10, 210, 50]
+        ]
         self.config = [
-            self.process_input([100, 50]),
-            self.process_input([100, 60, 50]),
-            self.process_input([30, 160, 50]),
-            self.process_input([30, 70, 10, 210, 50])
+            self.process_input(i) for i in self.segments
         ]
         self.run()
+
+    def tkInit(self):
+        try:
+            Control("Control",self)
+        except Exception as e:
+            print(e)
 
     def process_input(self, lst: list[int]) -> dict:
         return {
@@ -56,10 +73,19 @@ class Animator:
             newCoord = segment.draw(startX, startY, self.screen, self.font)
             startX = newCoord[0]
             startY = newCoord[1]
+       
+    def stretch(self):
+        for i in range(1, len(self.config[self.curIndex]["segment"])):
+            segment = self.config[self.curIndex]["segment"][i]
+            if(segment.joint_type == "prismatic"):
+                segment.length_holder += (1 * segment.stretch_flag)
+                if(segment.length_holder == segment.l or segment.length_holder == 0):
+                    segment.stretch_flag *= -1
         
     def rotate(self):
         for segment, dtheta in zip(self.config[self.curIndex]["segment"], self.config[self.curIndex]["rotation_speed"]):
-            segment.rotate(dtheta)
+            if(segment.joint_type == "revolute"):
+                segment.rotate(dtheta)
         
     def button(self, x1, y1, deltax, deltay, color, text, func):
         button_rect = pg.Rect(x1, y1, deltax, deltay)
@@ -102,10 +128,12 @@ class Animator:
                 self.button(700, 500, 100, 50, (0, 128, 255), "Right", self.on_right_button_click)
             self.render()
             self.rotate()
+            self.stretch()
             pg.display.flip()
             self.clock.tick(60)
         
 if __name__ == '__main__':
-    pg.init()
-    Animator()
+    pool = futures.ThreadPoolExecutor(max_workers=10)
+    app = Animator(pool=pool)
+    app.run()
     pg.quit()
