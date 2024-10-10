@@ -12,7 +12,13 @@ class Animator:
     
     def __init__(self, pool) -> None:
         self.pool = pool
-        # self.pool.submit(self.tkInit)
+        self.segments = [
+            [100, 50],
+            # [100, 60, 50],
+            # [30, 160, 50],
+            # [30, 70, 10, 210, 50]
+        ]
+        self.pool.submit(self.tkInit)
         self.pgInit()
 
     def pgInit(self):
@@ -24,13 +30,7 @@ class Animator:
         self.starting_point = (400, 500)
         self.prev_left_clicked = time.time()
         self.prev_right_clicked = time.time()
-        self.curIndex = 2
-        self.segments = [
-            [100, 50],
-            [100, 60, 50],
-            [30, 160, 50],
-            [30, 70, 10, 210, 50]
-        ]
+        self.curIndex = 0
         self.config = [
             self.process_input(i) for i in self.segments
         ]

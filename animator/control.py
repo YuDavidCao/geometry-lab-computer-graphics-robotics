@@ -1,5 +1,7 @@
 from tkinter import *
 import time
+import segment
+import math
 
 VEC_MAX = 10
 VEC_MIN = 0
@@ -27,7 +29,57 @@ class Control:
         self.gridMap = [[[0 for x in range(20)] for x in range(20)] for y in range(len(self.frames))]  
         self.varMap = [[[0 for x in range(20)] for x in range(20)] for y in range(len(self.frames))]
         self.addLabel(0,0,0, "Current segments and their lengths", cspan=3)
-        
+        self.addLabel(0,1,0, "Segment length", cspan=1)
+        self.redrawAll()
+
+    def redrawAll(self):
+        for i in range(len(self.render.segments[0])):
+            self.addEntry(0, 2 + i,0,None, None, None, None,default=f"{int(self.render.segments[0][i])}")
+            self.varMap[0][2 + i][0].trace_add("write", lambda *args: self.edit_vector(i))
+            self.addButton(0,2+i,1, 
+                      "remove segment",
+                       command = lambda *arg: self.remove_segment(i), cspan=3
+            )
+        self.addButton(0, 2 + len(self.render.segments[0]), 0, "Add segment", command = self.add_segment, cspan=3)
+
+    def remove_segment(self, i):
+        if(len(self.render.segments[0]) == 1):
+            return
+        self.render.segments[0].pop(i)
+        self.redrawAll()
+        self.change_object()
+        self.refresh_widget(0, 2 + i,0)
+        self.refresh_widget(0, 2 + i,1)
+
+    def add_segment(self):
+        self.render.segments[0].append(20)
+        self.redrawAll()
+        self.change_object()
+
+    def edit_vector(self, col):
+        currentVar = self.varMap[0][2 + col][0].get().strip()
+        if(currentVar!=""):
+            try:
+                print(currentVar, col)
+                # print(self.varMap)
+                self.render.segments[0][col] = int(currentVar)
+                self.change_object()
+            except Exception as e:
+                print(e)    
+        print(self.render.segments[0])
+    
+    def change_object(self):
+        self.render.config = [
+            self.process_input(i) for i in self.render.segments
+        ]
+    
+    def process_input(self, lst: list[int]) -> dict:
+        return {
+            "segment":[segment.Segment(200, math.pi*3/2, 0)] + [
+                segment.Segment(lst[i], 0, i + 1, True) for i in range(len(lst))
+            ],
+            "rotation_speed":[0] + [0.015 * (i + 1) for i in range(len(lst))]
+        }    
 
     def show_frame(self,frame):
         """raise the selected frame from self.frames"""
