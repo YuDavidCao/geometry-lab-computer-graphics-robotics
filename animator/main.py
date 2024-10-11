@@ -12,6 +12,9 @@ class Animator:
     
     def __init__(self, pool) -> None:
         self.pool = pool
+        self.draw_circle = False
+        self.spin = True
+        self.show_text = True
         self.segments = [
             [100, 50],
             # [100, 60, 50],
@@ -44,8 +47,8 @@ class Animator:
 
     def process_input(self, lst: list[int]) -> dict:
         return {
-            "segment":[segment.Segment(200, math.pi*3/2, 0)] + [
-                segment.Segment(lst[i], 0, i + 1, True) for i in range(len(lst))
+            "segment":[segment.Segment(self, 200, math.pi*3/2, 0)] + [
+                segment.Segment(self, lst[i], 0, i + 1, True) for i in range(len(lst))
             ],
             "rotation_speed":[0] + [0.015 * (i + 1) for i in range(len(lst))]
         }
@@ -73,6 +76,7 @@ class Animator:
             newCoord = segment.draw(startX, startY, self.screen, self.font)
             startX = newCoord[0]
             startY = newCoord[1]
+        self.screen.blit(self.font.render(f"Final Coordinate: {str(startX - 400)[:5]} {str(startY - 300)[:5]}", True, text_color), (500, 550))
        
     def stretch(self):
         for i in range(1, len(self.config[self.curIndex]["segment"])):
@@ -121,7 +125,8 @@ class Animator:
                 if event.type == pg.QUIT:
                     self.done = True
             self.screen.fill((0, 0, 0))
-            self.draw_label()
+            if(self.draw_label):
+                self.draw_label()
             if(self.curIndex != 0):
                 self.button(0, 500, 100, 50, (0, 128, 255), "Left", self.on_left_button_click)
             if(self.curIndex != len(self.config) - 1):
@@ -137,3 +142,6 @@ if __name__ == '__main__':
     app = Animator(pool=pool)
     app.run()
     pg.quit()
+    
+# idea: demonstrate the effect of longer joints by removing bg
+# idea: use it as a tool to prove their guesses about the effect of longer joints
