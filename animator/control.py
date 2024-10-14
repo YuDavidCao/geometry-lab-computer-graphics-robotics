@@ -71,7 +71,7 @@ class Control:
             self.varMap[0][2 + i][0].trace_add("write", lambda *args, i=i: self.edit_vector(i))
             self.addButton(0,2+i,1, 
                       "remove segment",
-                       command = lambda *arg: self.remove_segment(i), cspan=1
+                       command = lambda *arg, i=i: self.remove_segment(i), cspan=1
             )
         self.addButton(0, 2 + len(self.render.segments[0]), 0, "Add segment", command = self.add_segment, cspan=1)
 
