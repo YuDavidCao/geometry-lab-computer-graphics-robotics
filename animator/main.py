@@ -15,6 +15,8 @@ class Animator:
         self.draw_circle = False
         self.spin = True
         self.show_text = True
+        self.target_x = 0
+        self.target_y = 0
         self.segments = [
             [100, 50],
             # [100, 60, 50],
@@ -118,6 +120,9 @@ class Animator:
         for segment in self.config[self.curIndex]["segment"]:
             if(segment.i != 0):
                 self.screen.blit(pg.font.SysFont("Arial", 20, bold=True).render(f"Segment {segment.i}, Length {segment.l}, starting at joint {segment.i}", True, pg.Color("white")), (0,0 + (segment.i-1) * 30))
+      
+    def draw_target(self):
+        pg.draw.circle(self.screen, (255, 0, 0), (self.target_x + 400, self.target_y + 300), 5)
         
     def run(self):
         while not self.done:
@@ -134,6 +139,7 @@ class Animator:
             self.render()
             self.rotate()
             self.stretch()
+            self.draw_target()
             pg.display.flip()
             self.clock.tick(60)
         

@@ -33,7 +33,27 @@ class Control:
         self.addButton(0,1,3, "toggle show circle", command = self.draw_flag_switch, cspan=1)
         self.addButton(0,2,3, "toggle spin", command = self.toggle_spin, cspan=1)
         self.addButton(0,3,3, "toggle show text", command = self.toggle_text, cspan=1)
+        self.addLabel(0,0,4, "Target x", cspan=1)
+        self.addLabel(0,0,5, "Target y", cspan=1)
+        self.addEntry(0, 1, 4, None, None, None, None, default=f"{0}")
+        self.varMap[0][1][4].trace_add("write", lambda *args: self.change_target())
+        self.addEntry(0, 1, 5, None, None, None, None, default=f"{0}")
+        self.varMap[0][1][5].trace_add("write", lambda *args: self.change_target())
         self.redrawAll()
+
+    def change_target(self):
+        currentVar = self.varMap[0][1][4].get().strip()
+        if(currentVar!=""):
+            try:
+                self.render.target_x = int(currentVar)
+            except Exception as e:
+                print(e)
+        currentVar = self.varMap[0][1][5].get().strip()
+        if(currentVar!=""):
+            try:
+                self.render.target_y = int(currentVar)
+            except Exception as e:
+                print(e)
 
     def toggle_text(self):
         self.render.show_text = not self.render.show_text
@@ -46,8 +66,9 @@ class Control:
 
     def redrawAll(self):
         for i in range(len(self.render.segments[0])):
+            self.refresh_widget(0, 2 + i, 0)
             self.addEntry(0, 2 + i,0,None, None, None, None,default=f"{int(self.render.segments[0][i])}")
-            self.varMap[0][2 + i][0].trace_add("write", lambda *args: self.edit_vector(i))
+            self.varMap[0][2 + i][0].trace_add("write", lambda *args, i=i: self.edit_vector(i))
             self.addButton(0,2+i,1, 
                       "remove segment",
                        command = lambda *arg: self.remove_segment(i), cspan=1
@@ -72,13 +93,10 @@ class Control:
         currentVar = self.varMap[0][2 + col][0].get().strip()
         if(currentVar!=""):
             try:
-                print(currentVar, col)
-                # print(self.varMap)
                 self.render.segments[0][col] = int(currentVar)
                 self.change_object()
             except Exception as e:
                 print(e)
-        print(self.render.segments[0])
     
     def change_object(self):
         self.render.config = [
